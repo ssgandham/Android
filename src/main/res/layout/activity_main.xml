@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:onClick="calculateResult"
+            android:onClick="onEqual"
             android:text="=">
         </Button>
     </LinearLayout>
@@ -181,7 +181,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:onClick="onDecimalPoint"
+            android:onClick="onDot"
             android:text=".">
         </Button>
         <Button

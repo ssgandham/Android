@@ -6,16 +6,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import java.util.Stack
 
 class MainActivity : AppCompatActivity() {
 
     private var tvInput: TextView? = null
-    private var prevNum: CharSequence? = null
-    private var sign= "+"
-    private var sumSoFar = 0
-    private var isResultCalled = false
+
+    private var lastNumeric:Boolean = false
+    private var lastDot: Boolean = false
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,89 +26,88 @@ class MainActivity : AppCompatActivity() {
         tvInput = findViewById(R.id.tvInput)
     }
 
-    fun calculate(s: CharSequence?): Double {
-        var num = 0
-        var result = 0.0
-        var sign = '+'
-        val st = Stack<Int>()
-
-        if (s != null) {
-            for (i in 0 until s.length) {
-                val ch = s?.get(i)
-                if (ch?.isDigit()==true) {
-                    num = num * 10 + (ch - '0')
-                }
-                if (ch != null) {
-                    if (!ch.isDigit() || i == s.length - 1) {
-                        when (sign) {
-                            '+' -> st.push(num)
-                            '-' -> st.push(-num)
-                            '/' -> st.push(st.pop() / num)
-                            else -> st.push(st.pop() * num)
-                        }
-                        sign = ch
-                        num = 0
-                    }
-                }
-            }
-        }
-
-        while (st.isNotEmpty()) {
-            result += st.pop()
-        }
-
-        isResultCalled = true
-        return result
-    }
-
-
-    fun calculateResult(view: View){
-        tvInput?.text = calculate(tvInput?.text).toString()
-
-
-    }
-
-    fun isPreviousCharOperator(): Boolean {
-        val text = tvInput?.text.toString()
-        val lastIndex = text.length - 1
-
-        if (lastIndex >= 0) {
-            val prevChar: Char = text[lastIndex]
-            return prevChar == '-' || prevChar == '+' || prevChar == '/' || prevChar == '*'
-        }
-
-        return false
-    }
-
-    fun isCurrentCharOperator(t: CharSequence): Boolean {
-            var text = t.first()
-            return text == '-' || text == '+' || text == '/' || text == '*'
-    }
-
-
     fun onClick(view: View){
-        var ch = (view as Button).text
-
-        if(isResultCalled){
-            isResultCalled = false
-            tvInput?.text = ""
-            tvInput?.append(ch)
-
-        }else{
-            tvInput?.append(ch)
-        }
-
-
-
+        tvInput?.append((view as Button).text)
+        lastNumeric = true
     }
 
     fun onClear(view: View){
         tvInput?.text = ""
+        lastNumeric = false
+        lastDot = false
     }
 
-    fun onDecimalPoint(view: View){
-        if ((tvInput?.text?.contains("."))==false)
-            tvInput?.append((view as Button).text)
+    fun onDot(view: View){
+        if(lastNumeric && !lastDot){
+            tvInput?.append(".")
+            lastNumeric = false
+            lastDot = true
 
+        }
+
+    }
+
+    fun onEqual(view: View) {
+        if (lastNumeric) {
+            var tvValue = tvInput?.text.toString()
+            var prefix = ""
+            try {
+
+                if (tvValue.startsWith("-")) {
+                    prefix = "-"
+                    tvValue = tvValue.substring(1);
+                }
+
+                when {
+                    tvValue.contains("/") -> {
+                        val splitedValue = tvValue.split("/")
+
+                        var one = splitedValue[0] // Value One
+                        val two = splitedValue[1] // Value Two
+
+                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                            one = prefix + one
+                        }
+                        tvInput?.text = (one.toDouble() / two.toDouble()).toString()
+                    }
+                    tvValue.contains("*") -> {
+                        val splitedValue = tvValue.split("*")
+
+                        var one = splitedValue[0] // Value One
+                        val two = splitedValue[1] // Value Two
+
+                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                            one = prefix + one
+                        }
+                        tvInput?.text = (one.toDouble() * two.toDouble()).toString()
+                    }
+                    tvValue.contains("-") -> {
+                        val splitedValue = tvValue.split("-")
+
+                        var one = splitedValue[0] // Value One
+                        val two = splitedValue[1] // Value Two
+
+                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                            one = prefix + one
+                        }
+                        tvInput?.text =(one.toDouble() - two.toDouble()).toString()
+                    }
+                    tvValue.contains("+") -> {
+                        val splitedValue = tvValue.split("+")
+
+                        var one = splitedValue[0] // Value One
+                        val two = splitedValue[1] // Value Two
+
+                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                            one = prefix + one
+                        }
+                        tvInput?.text =(one.toDouble() + two.toDouble()).toString()
+                    }
+                }
+            } catch (e: ArithmeticException) {
+                e.printStackTrace()
+                Toast.makeText(this, "Invalid Input for Calulation", Toast.LENGTH_SHORT)
+            }
+        }
     }
 }
