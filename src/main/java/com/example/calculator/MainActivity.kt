@@ -13,7 +13,6 @@ import java.util.Stack
 class MainActivity : AppCompatActivity() {
 
     private var tvInput: TextView? = null
-
     private var lastNumeric:Boolean = false
     private var lastDot: Boolean = false
 
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                         var one = splitedValue[0] // Value One
                         val two = splitedValue[1] // Value Two
 
-                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                        if (prefix.isNotEmpty()) {
                             one = prefix + one
                         }
                         tvInput?.text = (one.toDouble() / two.toDouble()).toString()
@@ -76,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                         var one = splitedValue[0] // Value One
                         val two = splitedValue[1] // Value Two
 
-                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                        if (prefix.isNotEmpty()) {
                             one = prefix + one
                         }
                         tvInput?.text = (one.toDouble() * two.toDouble()).toString()
@@ -87,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                         var one = splitedValue[0] // Value One
                         val two = splitedValue[1] // Value Two
 
-                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                        if (prefix.isNotEmpty()) {
                             one = prefix + one
                         }
                         tvInput?.text =(one.toDouble() - two.toDouble()).toString()
@@ -98,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                         var one = splitedValue[0] // Value One
                         val two = splitedValue[1] // Value Two
 
-                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                        if (prefix.isNotEmpty()) {
                             one = prefix + one
                         }
                         tvInput?.text =(one.toDouble() + two.toDouble()).toString()
